@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="G0H0GH">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Uploaded Files</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .running {
+            background-color: #d4edda; 
+        }
+        .stopped {
+            background-color: #ffffff; 
+        }
+        .file-item {
+            display: flex;
+            justify-content: space-between; 
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>My Uploaded Files</h1>
+        <ul class="list-group">
+            {% for file in files %}
+            <li class="list-group-item {{ 'running' if file in running_files else 'stopped' }}">
+                <div class="file-item">
+                    <span>{{ file }}</span>
+                    <div>
+                        <button class="btn btn-success btn-sm mr-2" onclick="runFile('{{ file }}')">Run</button>
+                        <button class="btn btn-danger btn-sm" onclick="stopFile('{{ file }}')">Stop</button>
+                        <button class="btn btn-warning btn-sm ml-2" onclick="editFile('{{ file }}')">Edit</button> 
+                        <button class="btn btn-danger btn-sm ml-2" onclick="deleteFile('{{ file }}')">Delete</button>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        <a href="/" class="btn btn-primary mt-3">Back to Upload</a>
+    </div>
+
+    <script>
+        async function runFile(filename) {
+            const response = await fetch(`/run/${filename}`, { method: 'POST' });
+            const result = await response.json();
+            if (response.ok) {
+                alert(`${filename} is now running.`);
+                location.reload();
+            } else {
+                alert(result.error);
+            }
+        }
+
+        async function stopFile(filename) {
+            const response = await fetch(`/stop/${filename}`, { method: 'POST' });
+            const result = await response.json();
+            if (response.ok) {
+                alert(`${filename} has been stopped.`);
+                location.reload();
+            } else {
+                alert(result.error);
+            }
+        }
+
+        async function deleteFile(filename) {
+            const response = await fetch(`/delete/${filename}`, { method: 'POST' });
+            const result = await response.json();
+            alert(result.message || result.error);
+            location.reload(); 
+        }
+
+        function editFile(filename) {
+            window.location.href = `/edit/${filename}`;
+        }
+    </script>
+</body>
+</html>

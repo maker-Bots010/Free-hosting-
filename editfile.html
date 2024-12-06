@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="G0H0GH">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit {{ filename }}</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" type="text/javascript"></script>
+    <style>
+        #editor {
+            height: 600px;
+            border: 1px solid #ccc; 
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="text-center">Editing {{ filename }}</h1>
+        <div id="editor">{{ content }}</div>
+        <form action="/edit/{{ filename }}" method="post" id="editorForm">
+            <textarea name="content" id="content" style="display:none;"></textarea>
+            <button type="submit" class="btn btn-success mt-2">Save</button>
+            <a href="/myfile" class="btn btn-secondary mt-2">Cancel</a>
+        </form>
+    </div>
+
+    <script>
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/monokai");
+        editor.session.setMode("ace/mode/python");
+
+        document.getElementById("editorForm").onsubmit = function() {
+            document.getElementById("content").value = editor.getValue();
+        };
+    </script>
+</body>
+</html>

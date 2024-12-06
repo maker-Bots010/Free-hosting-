@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="G0H0GH">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload and Execute Python Files</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
+    <style>
+        .custom-file-input:lang(en) ~ .custom-file-label::after {
+            content: "Browse";
+        }
+        .run-btn, .stop-btn {
+            width: 80px;
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                <div class="sidebar-sticky">
+                    <h5 class="sidebar-heading">Uploaded Files</h5>
+                    <ul class="nav flex-column">
+                        {% for file in files %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if file in uploaded_files %}active{% endif %}" href="#">{{ file }}</a>
+                            <button class="btn btn-success btn-sm run-btn" id="runBtn-{{ file }}" onclick="runFile('{{ file }}', this)">Run</button>
+                            <button class="btn btn-danger btn-sm stop-btn" onclick="stopFile('{{ file }}')">Stop</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteFile('{{ file }}')">Delete</button>
+                        </li>
+                        {% endfor %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/myfile">My Files</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+                <h1 class="mt-4">Upload and Execute Python Files</h1>
+                <form id="uploadForm" method="post" enctype="multipart/form-data" class="mt-4">
+                    <div class="form-group">
+                        <label for="fileUpload" class="btn btn-primary">
+                            Choose File
+                        </label>
+                        <input type="file" name="files" id="fileUpload" class="custom-file-input" multiple style="display: none;">
+                        <small class="form-text text-muted">You can upload multiple Python files.</small>
+                    </div>
+                    <div class="button-container">
+                        <button type="submit" class="btn btn-success">Upload</button>
+                        <a href="/myfile" class="btn btn-success ml-2">My Files</a>
+                        <button type="button" class="btn btn-info ml-2" onclick="window.location.href='/creatfile'">Create File</button>
+                    </div>
+                </form>
+                <div id="fileActions" class="mt-4" style="display: none;">
+                    <button class="btn btn-success" id="runSelected" onclick="runSelectedFiles()">Run Selected</button>
+                    <button class="btn btn-danger" onclick="deleteSelectedFiles()">Delete Selected</button>
+                </div>
+                <div id="statusBar" class="alert alert-info mt-3" style="display: none;"></div>
+                <div class="mt-4 terminal">
+                    <textarea id="terminalInput" class="form-control" rows="4" placeholder="Type your command here..."></textarea>
+                    <button class="btn btn-dark mt-2" onclick="runTerminalCommand()">Run Command</button>
+                    <pre id="output" class="output-console p-3"></pre>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>
